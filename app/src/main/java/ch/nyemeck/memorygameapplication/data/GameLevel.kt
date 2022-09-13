@@ -1,6 +1,6 @@
 package ch.nyemeck.memorygameapplication.data
 
-enum class BoardGameLevel(val numberOfCards: Int) {
+enum class GameLevel(val numberOfCards: Int) {
     EASY(8),
     MEDIUM(18),
     HARD(24);

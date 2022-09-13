@@ -1,4 +1,4 @@
 package ch.nyemeck.memorygameapplication.data
 
-data class CardItem(val id: Int, val isFaceUp: Boolean = false, val isMatched: Boolean = false)
+data class CardItem(val id: Int, var isFaceUp: Boolean = false, var isMatched: Boolean = false)
 

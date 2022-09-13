@@ -5,16 +5,20 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ch.nyemeck.memorygameapplication.data.BoardGameLevel
+import ch.nyemeck.memorygameapplication.data.GameBoard
 import ch.nyemeck.memorygameapplication.databinding.ActivityMainBinding
-import ch.nyemeck.memorygameapplication.util.ICONS
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mainActivityBinding: ActivityMainBinding
-    private lateinit var recyclerView: RecyclerView
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
+    }
+
+    private lateinit var mainActivityBinding : ActivityMainBinding
+    private lateinit var recyclerView : RecyclerView
     private lateinit var buttonPlay : Button
-    private val boardGameLevel =  BoardGameLevel.EASY
+    private lateinit var gameBoard : GameBoard
+    private lateinit var memoryGameAdapter : MemoryGameAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,19 +28,31 @@ class MainActivity : AppCompatActivity() {
         buttonPlay = mainActivityBinding.buttonPlayId
 
         //Building the board game
-        val chosenCards = ICONS.shuffled().take(boardGameLevel.getNumberOfPairs())
-        val cards = (chosenCards + chosenCards).shuffled()
+        gameBoard = GameBoard()
+
         //Init the recycler view
-        val memoryGameAdapter = MemoryGameAdapter(this, boardGameLevel, cards)
-        val gridLayoutManager = GridLayoutManager(this,boardGameLevel.getColumn())
+        memoryGameAdapter = MemoryGameAdapter(gameBoard.level, gameBoard.cardItems){
+            position ->
+            updateBoard(position)
+        }
+
+        val gridLayoutManager = GridLayoutManager(this,gameBoard.level.getColumn())
         recyclerView.apply {
             adapter = memoryGameAdapter
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
         }
-        /*recyclerView.layoutManager = GridLayoutManager(this, 2)
-        recyclerView.adapter = MemoryGameAdapter(this, 8)
-        recyclerView.setHasFixedSize(true)*/
+    }
 
+    private fun updateBoard(position: Int) {
+        if(gameBoard.finish()){
+
+            return
+        }
+        if(gameBoard.cardItemFacingUp(position)){
+            return
+        }
+        gameBoard.flipCard(position)
+        memoryGameAdapter.notifyDataSetChanged()
     }
 }
