@@ -4,11 +4,15 @@ import ch.nyemeck.memorygameapplication.util.ICONS
 
 class GameBoard {
 
-    val cardItems : List<CardItem>
+    lateinit var cardItems : List<CardItem>
     var previousSelectedCardIndex :Int? = null
     var numberOfPairFounds = 0
     val level = GameLevel.EASY
     init {
+        initialize()
+    }
+
+    private fun initialize() {
         val chosenImageIds = ICONS.shuffled().take(level.getNumberOfPairs())
         val randomizedChosenImageIds = (chosenImageIds + chosenImageIds).shuffled()
         cardItems = randomizedChosenImageIds.map { id -> CardItem(id) }
@@ -57,6 +61,10 @@ class GameBoard {
 
     fun cardItemFacingUp(position: Int): Boolean {
         return cardItems[position].isFaceUp
+    }
+
+    fun startGame() {
+        initialize()
     }
 
 }

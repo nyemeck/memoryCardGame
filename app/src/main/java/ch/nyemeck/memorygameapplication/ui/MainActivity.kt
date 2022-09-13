@@ -2,6 +2,7 @@ package ch.nyemeck.memorygameapplication.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,15 +29,24 @@ class MainActivity : AppCompatActivity() {
         buttonPlay = mainActivityBinding.buttonPlayId
 
         //Building the board game
+        setTheGame()
+        mainActivityBinding.buttonPlayId.setOnClickListener{
+            Log.d(TAG, "onCreate onclick finish: ${gameBoard.finish()}")
+            if (gameBoard.finish()){
+                setTheGame()
+            }
+        }
+    }
+
+    private fun setTheGame() {
         gameBoard = GameBoard()
 
         //Init the recycler view
-        memoryGameAdapter = MemoryGameAdapter(gameBoard.level, gameBoard.cardItems){
-            position ->
+        memoryGameAdapter = MemoryGameAdapter(gameBoard.level, gameBoard.cardItems) { position ->
             updateBoard(position)
         }
 
-        val gridLayoutManager = GridLayoutManager(this,gameBoard.level.getColumn())
+        val gridLayoutManager = GridLayoutManager(this, gameBoard.level.getColumn())
         recyclerView.apply {
             adapter = memoryGameAdapter
             setHasFixedSize(true)
